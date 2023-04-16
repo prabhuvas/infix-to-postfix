@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Infix to Postfix Converter</title>
+    <style>
+      body{
+        font-size: 25px;
+      }
+      h1{
+        text-align: center;
+        font-size: 35px;
+      }
+
+      h1 span{
+        text-decoration: underline;
+      }
+
+      div{
+        justify-content: center;
+        display: flex;
+        flex-direction: column;
+        margin: 5%;
+        margin-left: 25%;
+        margin-right: 25%;
+      }
+
+      div p{
+        font-size: 20px;
+        text-align: center;
+      }
+
+      div input{
+        height: 50px;
+        font-size: 25px;
+      }
+
+      button{
+        height: 50px;
+        border-radius: 5px;
+      }
+
+      .div-main{
+        border: 1px solid #D3D3D3;
+        background-color: #f0f0f0;
+        height: 420px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1><span>INFIX TO POSTFIX</span> CONVERTER</h1>
+    <div class="div-main">
+<div><br>
+    <label for="infix">Enter an Infix Expression:</label>
+    <input type="text" id="infix" name="infix" placeholder="" >
+<br>
+    <button onclick="convert()">Convert to Postfix</button>
+    <br><br>
+    <label for="postfix">Postfix Expression:</label>
+    <input type="text" id="postfix" name="postfix" readonly>
+    <br>
+    <p>By <a href="https://prabhuvasu-portfolio.netlify.app/">@Prabhu</a></p>
+  </div>
+  </div>
+  
+    <script>
+      function convert() {
+        let infix = document.getElementById("infix").value;
+        let postfix = infixToPostfix(infix);
+        document.getElementById("postfix").value = postfix;
+      }
+      
+      function infixToPostfix(infix) {
+        let postfix = "";
+        let stack = [];
+        let precedence = {
+          "+": 1,
+          "-": 1,
+          "*": 2,
+          "/": 2,
+          "^": 3,
+        };
+        
+        for (let i = 0; i < infix.length; i++) {
+          let c = infix[i];
+          
+          if (c === " ") continue;
+          
+          if (isLetterOrDigit(c)) {
+            postfix += c;
+          } else if (c === "(") {
+            stack.push(c);
+          } else if (c === ")") {
+            while (stack.length !== 0 && stack[stack.length - 1] !== "(") {
+              postfix += stack.pop();
+            }
+            if (stack.length !== 0 && stack[stack.length - 1] !== "(") {
+              return "Invalid expression";
+            } else {
+              stack.pop();
+            }
+          } else {
+            while (stack.length !== 0 && precedence[c] <= precedence[stack[stack.length - 1]]) {
+              postfix += stack.pop();
+            }
+            stack.push(c);
+          }
+        }
+        
+        while (stack.length !== 0) {
+          postfix += stack.pop();
+        }
+        
+        return postfix;
+      }
+      
+      function isLetterOrDigit(c) {
+        return /[a-zA-Z0-9]/.test(c);
+      }
+    </script>
+  </body>
+</html>
